@@ -136,7 +136,7 @@ define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :star
     mode "0755"
     variables :provides => name
     notifies :restart, "service[#{name}]"
-   end
+  end
 
   # service
   service name do
