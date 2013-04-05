@@ -20,10 +20,10 @@
 #
 
 define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :start],
-    :bind_ip => nil, :port => 27017 , :logpath => "/var/log/mongodb",
-    :dbpath => "/data", :configfile => "/etc/mongodb.conf", :configserver => [],
-    :replicaset => nil, :enable_rest => false, :notifies => [] do
-    
+:bind_ip => nil, :port => 27017 , :logpath => "/var/log/mongodb",
+:dbpath => "/data", :configfile => "/etc/mongodb.conf", :configserver => [],
+:replicaset => nil, :enable_rest => false, :notifies => [] do
+
   include_recipe "mongodb::default"
   
   name = params[:name]
@@ -102,7 +102,7 @@ define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :star
       "configsrv" => false, #type == "configserver", this might change the port
       "shardsrv" => false,  #type == "shard", dito.
       "enable_rest" => params[:enable_rest]
-    )
+      )
     notifies :restart, "service[#{name}]"
   end
   
@@ -129,14 +129,15 @@ define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :star
   # init script
   unless node[:platform] == 'ubuntu'
     template "#{node['mongodb']['init_dir']}/#{name}" do
-    action :create
-    source node[:mongodb][:init_script_template]
-    group node['mongodb']['root_group']
-    owner "root"
-    mode "0755"
-    variables :provides => name
-    notifies :restart, "service[#{name}]"
-  end
+      action :create
+      source node[:mongodb][:init_script_template]
+      group node['mongodb']['root_group']
+      owner "root"
+      mode "0755"
+      variables :provides => name
+      notifies :restart, "service[#{name}]"
+    end
+  end  
 
   # service
   service name do
@@ -162,11 +163,11 @@ define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :star
     rs_nodes = search(
       :node,
       "mongodb_cluster_name:#{replicaset['mongodb']['cluster_name']} AND \
-       recipes:mongodb\\:\\:replicaset AND \
-       mongodb_shard_name:#{replicaset['mongodb']['shard_name']} AND \
-       chef_environment:#{replicaset.chef_environment}"
-    )
-  
+      recipes:mongodb\\:\\:replicaset AND \
+      mongodb_shard_name:#{replicaset['mongodb']['shard_name']} AND \
+      chef_environment:#{replicaset.chef_environment}"
+      )
+
     ruby_block "config_replicaset" do
       block do
         if not replicaset.nil?
@@ -185,9 +186,9 @@ define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :star
     shard_nodes = search(
       :node,
       "mongodb_cluster_name:#{node['mongodb']['cluster_name']} AND \
-       recipes:mongodb\\:\\:shard AND \
-       chef_environment:#{node.chef_environment}"
-    )
+      recipes:mongodb\\:\\:shard AND \
+      chef_environment:#{node.chef_environment}"
+      )
     
     ruby_block "config_sharding" do
       block do
@@ -200,4 +201,3 @@ define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :star
     end
   end
 end
-

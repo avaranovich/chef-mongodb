@@ -62,5 +62,4 @@ else
   default[:mongodb][:root_group] = "root"
   default[:mongodb][:package_name] = "mongodb-10gen"
   default[:mongodb][:apt_repo] = "debian-sysvinit"
-
 end
