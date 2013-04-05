@@ -45,6 +45,11 @@ when "freebsd"
   default[:mongodb][:root_group] = "wheel"
   default[:mongodb][:package_name] = "mongodb"
 
+when "ubuntu"
+  default[:mongodb][:defaults_dir] = "/etc/default"
+  default[:mongodb][:root_group] = "root"
+  default[:mongodb][:package_name] = "mongodb"
+
 when "centos","redhat","fedora","amazon","scientific"
   default[:mongodb][:defaults_dir] = "/etc/sysconfig"
   default[:mongodb][:package_name] = "mongo-10gen-server"

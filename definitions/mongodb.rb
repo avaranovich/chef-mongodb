@@ -127,7 +127,8 @@ define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :star
   end
   
   # init script
-  template "#{node['mongodb']['init_dir']}/#{name}" do
+  unless node[:platform] == 'ubuntu'
+    template "#{node['mongodb']['init_dir']}/#{name}" do
     action :create
     source node[:mongodb][:init_script_template]
     group node['mongodb']['root_group']
@@ -135,8 +136,8 @@ define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :star
     mode "0755"
     variables :provides => name
     notifies :restart, "service[#{name}]"
-  end
-  
+   end
+
   # service
   service name do
     supports :status => true, :restart => true
